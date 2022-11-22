@@ -1,7 +1,7 @@
 cffi==1.15.1
-numpy==1.23.4
+numpy==1.23.5
+Pillow==9.3.0
 pycparser==2.21
 pynput==1.7.6
-pywin32==304
 six==1.16.0
 sounddevice==0.4.5
