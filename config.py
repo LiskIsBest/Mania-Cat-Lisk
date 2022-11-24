@@ -4,7 +4,7 @@ config_file = open("config.json","w")
 
 alphabet = [chr(a) for a in range(97,121,1)]   
 
-def invalid_response(reason)->str:
+def invalid_response(reason)->None:
     print("Invalid response! - " + reason)
 
 def set_keys(key_count):
