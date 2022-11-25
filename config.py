@@ -7,7 +7,7 @@ alphabet = np.array([chr(a) for a in range(65,91,1)])
 
 #TODO change to pynput as to read special keys like control_R
 
-def invalid_response(reason)->str:
+def invalid_response(reason)->None:
     print("Invalid response! - " + reason)
 
 def set_keys(key_count):
