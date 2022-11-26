@@ -1,9 +1,9 @@
 import json
-import numpy as np
+from numpy import array as arr
 
 config_file = open("config.json","w")
 
-alphabet = np.array([chr(a) for a in range(65,91,1)])
+alphabet = arr([chr(a) for a in range(65,91,1)])
 
 #TODO change to pynput as to read special keys like control_R
 
