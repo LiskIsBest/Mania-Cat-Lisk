@@ -1,4 +1,4 @@
 numpy==1.23.5
 Pillow==9.3.0
-pywin32==305
+pynput==1.7.6
 six==1.16.0
