@@ -27,7 +27,6 @@ class Window:
         pressed_key = event.keysym
         pressed_check = "pressed" if event.type == "2" else "released"
         new_text = f"Key: {pressed_key} was {pressed_check}"
-        # print(new_text := f"Key: {pressed_key} was {pressed_check}")
         self.to_dump[f"{pressed_key}"] = pressed_key
         self.label1["text"] = new_text + " - Press Esc to quit."
         return
