@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import PhotoImage,Canvas, Tk
 import json
 
 import sys
@@ -9,122 +9,128 @@ def resource_path(relative_path):
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
 
-FILENAME: str = "config.json"
+class Window(Tk):
 
-config_file = open(FILENAME, 'r')
+    def __init__(self)->None:
 
-config: dict = json.load(config_file)
-key1: dict = {"key": config['key1']}
-key2: dict = {"key": config['key2']}
-key3: dict = {"key": config['key3']}
-key4: dict = {"key": config['key4']}
-valid_keys = [one:=key1["key"],two:=key2["key"],three:=key3["key"],four:=key4["key"]]
-win_width = 1189
-win_height = 669
+        self.config_file = open("config.json", 'r')
+        
+        super(Window, self).__init__()
 
+        self.win_width = 1189
+        self.win_height = 669
 
-paws = {
-    "key1_pressed":False,
-    "key2_pressed":False,
-    "key3_pressed":False,
-    "key4_pressed":False,
-}
+        self.background_img = PhotoImage(file="4k/base.png")
+        self.key1_pressed_img = PhotoImage(file="4k/base_0001.png")
+        self.key2_pressed_img = PhotoImage(file="4k/base_0010.png")
+        self.key3_pressed_img = PhotoImage(file="4k/base_0100.png")
+        self.key4_pressed_img = PhotoImage(file="4k/base_1000.png")
+        self.key12_pressed_img = PhotoImage(file="4k/base_0011.png")
+        self.key34_pressed_img = PhotoImage(file="4k/base_1100.png")
+        self.left_paw_img = PhotoImage(file="4k/base_right.png")
+        self.right_paw_img = PhotoImage(file="4k/base_left.png")
 
-def change_paw(keys):
+        self.paws = {
+            "key1_pressed":False,
+            "key2_pressed":False,
+            "key3_pressed":False,
+            "key4_pressed":False,
+        }
+
+        self.config: dict = json.load(self.config_file)
+        self.key1: dict = {"key": self.config['key1']}
+        self.key2: dict = {"key": self.config['key2']}
+        self.key3: dict = {"key": self.config['key3']}
+        self.key4: dict = {"key": self.config['key4']}
+        self.valid_keys = [self.key1["key"],self.key2["key"],self.key3["key"],self.key4["key"]]
+
+        self.one = self.valid_keys[0]
+        self.two = self.valid_keys[1]
+        self.three = self.valid_keys[2]
+        self.four = self.valid_keys[3]
+
+        self.bind("<KeyPress>",self.event_handle)
+        self.bind("<KeyRelease>",self.event_handle)
+
+        self.bind("<Escape>", self.exit_app)
+
+        self.resizable(False,False)
+        self.iconphoto(False, PhotoImage(file=resource_path("favicon.png")))
+        self.title("4k Mania Cat")
+
+        self.frame = Canvas(self,width=self.win_width,height=self.win_height)
+        self.frame.pack()
+        self.frame.focus_set()
+
+        self.canvas = Canvas(self.frame,bg="black", width=self.win_width, height=self.win_height)
+
+        self.background = self.canvas.create_image(self.win_width/2,self.win_height/2,image=self.background_img)
+
+        self.keys_right = self.canvas.create_image(self.win_width/2,self.win_height/2,image=self.right_paw_img)
+        self.keys_left = self.canvas.create_image(self.win_width/2,self.win_height/2,image=self.left_paw_img)
+
+        self.canvas.place(x=0,y=0)
+
+    def event_handle(self,event):
+        key_pressed = event.keysym
+        pressed_check = not(int(event.type)-2) # event.type returns "2" for press or "3" for release. converts to true false
+
+        if key_pressed not in self.valid_keys:
+            return
+
+        if pressed_check:
+            if key_pressed == self.one:
+                self.paws["key1_pressed"] = True
+            elif key_pressed == self.two:
+                self.paws["key2_pressed"] = True
+            elif key_pressed == self.three:
+                self.paws["key3_pressed"] = True
+            elif key_pressed == self.four:
+                self.paws["key4_pressed"] = True
+            self.change_paw(self.paws)
+
+        if not pressed_check:
+            if key_pressed == self.one:
+                self.paws["key1_pressed"] = False
+            elif key_pressed == self.two:
+                self.paws["key2_pressed"] = False
+            elif key_pressed == self.three:
+                self.paws["key3_pressed"] = False
+            elif key_pressed == self.four:
+                self.paws["key4_pressed"] = False
+            self.change_paw(self.paws)
+
+        print(pressed_check, " ", key_pressed)
+
+    def exit_app(self,event):
+        self.destroy()
+        
+    def change_paw(self,keys):
 
         if(keys["key1_pressed"] == True) and (keys["key2_pressed"] == False):
-            canvas.itemconfig(keys_left, image=key1_pressed_img)
+            self.canvas.itemconfig(self.keys_left, image=self.key1_pressed_img)
         elif(keys["key1_pressed"] == False) and (keys["key2_pressed"] == True):
-            canvas.itemconfig(keys_left, image=key2_pressed_img)
+            self.canvas.itemconfig(self.keys_left, image=self.key2_pressed_img)
         elif(keys["key1_pressed"] == True) and (keys["key2_pressed"] == True):
-            canvas.itemconfig(keys_left, image=key12_pressed_img)
+            self.canvas.itemconfig(self.keys_left, image=self.key12_pressed_img)
         elif(keys["key1_pressed"] == False) and (keys["key2_pressed"] == False):
-            canvas.itemconfig(keys_left, image=left_paw_img)
+            self.canvas.itemconfig(self.keys_left, image=self.left_paw_img)
 
         if(keys["key3_pressed"] == True) and (keys["key4_pressed"] == False):
-            canvas.itemconfig(keys_right, image=key3_pressed_img)
+            self.canvas.itemconfig(self.keys_right, image=self.key3_pressed_img)
         elif(keys["key3_pressed"] == False) and (keys["key4_pressed"] == True):
-            canvas.itemconfig(keys_right, image=key4_pressed_img)
+            self.canvas.itemconfig(self.keys_right, image=self.key4_pressed_img)
         elif(keys["key3_pressed"] == True) and (keys["key4_pressed"] == True):
-            canvas.itemconfig(keys_right, image=key34_pressed_img)
+            self.canvas.itemconfig(self.keys_right, image=self.key34_pressed_img)
         elif(keys["key3_pressed"] == False) and (keys["key4_pressed"] == False):
-            canvas.itemconfig(keys_right, image=right_paw_img)
-
-def event_handle(event):
-    key_pressed = event.keysym
-    pressed_check = not(int(event.type)-2) # event.type returns "2" for press or "3" for release. converts to true false
-
-    if key_pressed not in valid_keys:
-        return
-
-    if pressed_check:
-        if key_pressed == one:
-            paws["key1_pressed"] = True
-        elif key_pressed == two:
-            paws["key2_pressed"] = True
-        elif key_pressed == three:
-            paws["key3_pressed"] = True
-        elif key_pressed == four:
-            paws["key4_pressed"] = True
-        change_paw(paws)
-
-    if not pressed_check:
-        if key_pressed == one:
-            paws["key1_pressed"] = False
-        elif key_pressed == two:
-            paws["key2_pressed"] = False
-        elif key_pressed == three:
-            paws["key3_pressed"] = False
-        elif key_pressed == four:
-            paws["key4_pressed"] = False
-        change_paw(paws)
-
-    print(pressed_check, " ", key_pressed)
+            self.canvas.itemconfig(self.keys_right, image=self.right_paw_img)
 
 
-root = Tk()
-root.resizable(False,False)
-root.iconphoto(False, PhotoImage(file=resource_path("favicon.png")))
-root.title("4k Mania Cat")
 
-frame = Canvas(root,width=win_width,height=win_height)
-frame.bind("<KeyPress>",event_handle)
-frame.bind("<KeyRelease>",event_handle)
-frame.pack()
-frame.focus_set()
+def main():
+    window = Window()
+    window.mainloop()
 
-background_img = PhotoImage(file="4k/base.png")
-key1_pressed_img = PhotoImage(file="4k/base_0001.png")
-key2_pressed_img = PhotoImage(file="4k/base_0010.png")
-key3_pressed_img = PhotoImage(file="4k/base_0100.png")
-key4_pressed_img = PhotoImage(file="4k/base_1000.png")
-key12_pressed_img = PhotoImage(file="4k/base_0011.png")
-key34_pressed_img = PhotoImage(file="4k/base_1100.png")
-left_paw_img = PhotoImage(file="4k/base_right.png")
-right_paw_img = PhotoImage(file="4k/base_left.png")
 
-canvas = Canvas(frame,bg="black", width=win_width, height=win_height)
-
-background = canvas.create_image(win_width/2,win_height/2,image=background_img)
-
-# key1_pressed = canvas.create_image(win_width/2,win_height/2,image=left_paw)
-# key2_pressed = canvas.create_image(win_width/2,win_height/2,image=left_paw)
-# key3_pressed = canvas.create_image(win_width/2,win_height/2,image=right_paw)
-# key4_pressed = canvas.create_image(win_width/2,win_height/2,image=right_paw)
-# key12_pressed = canvas.create_image(win_width/2,win_height/2,image=blank)
-# key23_pressed = canvas.create_image(win_width/2,win_height/2,image=blank)
-
-keys_right = canvas.create_image(win_width/2,win_height/2,image=right_paw_img)
-keys_left = canvas.create_image(win_width/2,win_height/2,image=left_paw_img)
-
-canvas.place(x=0,y=0)
-
-# frame2 = Frame(root,width=win_width,height=win_height)
-# frame.bind("<KeyPress>",event_handle)
-# frame.bind("<KeyRelease>",event_handle)
-# frame.pack()
-
-# key1_pressed_canvas = Canvas(frame, width=win_width, height=win_height)
-# key1_pressed_canvas.place(x=0,y=0)
-
-root.mainloop()
+if __name__=="__main__":
+    main()
