@@ -11,6 +11,6 @@ Cat and keypress images are pulled from [malad1211](https://github.com/malad1211
 
 3. Run Python_Mania_Cat.exe and enjoy!
 
-## Disclamer
+## Disclaimer
 Not every key can be read by the current version of config.exe.\
 All alphanumeric characters will work without issues.
