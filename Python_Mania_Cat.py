@@ -11,6 +11,8 @@ from PIL import Image,ImageTk
 import json
 from pynput import keyboard
 
+from typing import TextIO
+
 class Window(Tk):
 
     def __init__(self)->None:
@@ -18,41 +20,58 @@ class Window(Tk):
         super(Window, self).__init__()
 
         # init window resolution
-        self.win_width = 476
-        self.win_height = 268
+        self.win_width: int = 476
+        self.win_height: int = 268
 
         # init all used images
-        self.background_img = ImageTk.PhotoImage(Image.open("4k/base.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
-        self.key1_pressed_img = ImageTk.PhotoImage(Image.open("4k/base_0001.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
-        self.key2_pressed_img = ImageTk.PhotoImage(Image.open("4k/base_0010.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
-        self.key3_pressed_img = ImageTk.PhotoImage(Image.open("4k/base_0100.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
-        self.key4_pressed_img = ImageTk.PhotoImage(Image.open("4k/base_1000.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
-        self.key12_pressed_img = ImageTk.PhotoImage(Image.open("4k/base_0011.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
-        self.key34_pressed_img = ImageTk.PhotoImage(Image.open("4k/base_1100.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
-        self.left_paw_img = ImageTk.PhotoImage(Image.open("4k/base_right.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
-        self.right_paw_img = ImageTk.PhotoImage(Image.open("4k/base_left.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
+        self.background_img: PhotoImage = ImageTk.PhotoImage(
+            Image.open("4k/base.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
+        
+        self.key1_pressed_img: PhotoImage = ImageTk.PhotoImage(
+            Image.open("4k/base_0001.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
+        
+        self.key2_pressed_img: PhotoImage = ImageTk.PhotoImage(
+            Image.open("4k/base_0010.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
+
+        self.key3_pressed_img: PhotoImage = ImageTk.PhotoImage(
+            Image.open("4k/base_0100.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
+
+        self.key4_pressed_img: PhotoImage = ImageTk.PhotoImage(
+            Image.open("4k/base_1000.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
+
+        self.key12_pressed_img: PhotoImage = ImageTk.PhotoImage(
+            Image.open("4k/base_0011.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
+
+        self.key34_pressed_img: PhotoImage = ImageTk.PhotoImage(
+            Image.open("4k/base_1100.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
+
+        self.left_paw_img: PhotoImage = ImageTk.PhotoImage(
+            Image.open("4k/base_right.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
+
+        self.right_paw_img: PhotoImage = ImageTk.PhotoImage(
+            Image.open("4k/base_left.png").resize((self.win_width+5,self.win_height+5),Image.Resampling.LANCZOS))
 
         # init pressed dictionary
         """ used in change_paw func to update canvases"""
-        self.paws = {
+        self.paws: dict = {
             "key1_pressed":False,
             "key2_pressed":False,
             "key3_pressed":False,
             "key4_pressed":False,
         }
 
-        self.config_file = open("config.json", 'r')
+        self.config_file: TextIO = open("config.json", 'r')
         self.config: dict = json.load(self.config_file)
         self.key1: dict = {"key": self.config['key1']}
         self.key2: dict = {"key": self.config['key2']}
         self.key3: dict = {"key": self.config['key3']}
         self.key4: dict = {"key": self.config['key4']}
-        self.valid_keys = [self.key1["key"],self.key2["key"],self.key3["key"],self.key4["key"]]
+        self.valid_keys: list = [self.key1["key"],self.key2["key"],self.key3["key"],self.key4["key"]]
 
-        self.one = self.valid_keys[0]
-        self.two = self.valid_keys[1]
-        self.three = self.valid_keys[2]
-        self.four = self.valid_keys[3]
+        self.one: str = self.valid_keys[0]
+        self.two: str = self.valid_keys[1]
+        self.three: str = self.valid_keys[2]
+        self.four: str = self.valid_keys[3]
 
         # Keybind handlers
         self.bind("<Escape>", self.exit_app)
@@ -65,12 +84,12 @@ class Window(Tk):
         self.title("4k Mania Cat")
 
         # base frame
-        self.frame = Canvas(self,width=self.win_width,height=self.win_height)
-        self.frame.pack()
-        self.frame.focus_set()
+        self.main_canvas: Canvas = Canvas(self,width=self.win_width,height=self.win_height)
+        self.main_canvas.pack()
+        self.main_canvas.focus_set()
 
         # canvas to handle the handles images
-        self.canvas = Canvas(self.frame,bg="black", width=self.win_width, height=self.win_height)
+        self.canvas: Canvas = Canvas(self.main_canvas,bg="black", width=self.win_width, height=self.win_height)
 
         # background image
         self.background = self.canvas.create_image(0,0, anchor=NW,image=self.background_img)
@@ -83,42 +102,45 @@ class Window(Tk):
 
         self.canvas.place(x=0,y=0)
 
-    def key_press(self,key):
+    def key_press(self,key)->None:
 
-        key = self.get_char(key)
+        # set key to a string if possible
+        key: str = self.get_char(key)
         
-        if key not in self.valid_keys:
+        # if key is valid then update paws dict
+        if key in self.valid_keys:
+            self.update_keys(key=key,pressed=True)
+        else:
             return
+
+    def key_release(self,key)->None:
         
-        if key == self.one:
-            self.paws["key1_pressed"] = True
-        elif key == self.two:
-            self.paws["key2_pressed"] = True
-        elif key == self.three:
-            self.paws["key3_pressed"] = True
-        elif key == self.four:
-            self.paws["key4_pressed"] = True
+        # set key to a string if possible
+        key: str = self.get_char(key)
+
+        # if key is valid then update paws dict
+        if key in self.valid_keys:
+            self.update_keys(key=key,pressed=False)
+        else:
+            return
+
+    def update_keys(self,key: str,pressed: bool)->None:
+
+        match(key):
+            case self.one:
+                self.paws["key1_pressed"] = pressed
+            case self.two:
+                self.paws["key2_pressed"] = pressed
+            case self.three:
+                self.paws["key3_pressed"] = pressed
+            case self.four:
+                self.paws["key4_pressed"] = pressed
+        
         self.change_paw(self.paws)
 
-    def key_release(self,key):
-        
-        key = self.get_char(key)
+    
+    def change_paw(self,keys)->None:
 
-        if key not in self.valid_keys:
-            return
-            
-        if key == self.one:
-                self.paws["key1_pressed"] = False
-        elif key == self.two:
-            self.paws["key2_pressed"] = False
-        elif key == self.three:
-            self.paws["key3_pressed"] = False
-        elif key == self.four:
-            self.paws["key4_pressed"] = False
-        self.change_paw(self.paws)
-
-    def change_paw(self,keys):
-        
         match(keys["key1_pressed"],keys["key2_pressed"]):
             case True, False:
                 self.canvas.itemconfig(self.keys_left, image=self.key1_pressed_img)
@@ -149,12 +171,12 @@ class Window(Tk):
 
     def get_char(self,key):
         try:
-            key = key.char
+            key: str = key.char
             return key
         except:
             return key
 
-def main():
+def main()->None:
     
     window = Window()
     window.mainloop()
