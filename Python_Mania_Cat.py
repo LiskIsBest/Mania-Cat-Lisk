@@ -88,7 +88,6 @@ class Window(Tk):
         key = self.get_char(key)
         
         if key not in self.valid_keys:
-            print(f"{key} press not valid. skipping")
             return
         
         if key == self.one:
@@ -106,7 +105,6 @@ class Window(Tk):
         key = self.get_char(key)
 
         if key not in self.valid_keys:
-            print(f"{key} release not valid. skipping")
             return
             
         if key == self.one:
@@ -120,24 +118,26 @@ class Window(Tk):
         self.change_paw(self.paws)
 
     def change_paw(self,keys):
-
-        if(keys["key1_pressed"] == True) and (keys["key2_pressed"] == False):
-            self.canvas.itemconfig(self.keys_left, image=self.key1_pressed_img)
-        elif(keys["key1_pressed"] == False) and (keys["key2_pressed"] == True):
-            self.canvas.itemconfig(self.keys_left, image=self.key2_pressed_img)
-        elif(keys["key1_pressed"] == True) and (keys["key2_pressed"] == True):
-            self.canvas.itemconfig(self.keys_left, image=self.key12_pressed_img)
-        elif(keys["key1_pressed"] == False) and (keys["key2_pressed"] == False):
-            self.canvas.itemconfig(self.keys_left, image=self.left_paw_img)
-
-        if(keys["key3_pressed"] == True) and (keys["key4_pressed"] == False):
-            self.canvas.itemconfig(self.keys_right, image=self.key3_pressed_img)
-        elif(keys["key3_pressed"] == False) and (keys["key4_pressed"] == True):
-            self.canvas.itemconfig(self.keys_right, image=self.key4_pressed_img)
-        elif(keys["key3_pressed"] == True) and (keys["key4_pressed"] == True):
-            self.canvas.itemconfig(self.keys_right, image=self.key34_pressed_img)
-        elif(keys["key3_pressed"] == False) and (keys["key4_pressed"] == False):
-            self.canvas.itemconfig(self.keys_right, image=self.right_paw_img)
+        
+        match(keys["key1_pressed"],keys["key2_pressed"]):
+            case True, False:
+                self.canvas.itemconfig(self.keys_left, image=self.key1_pressed_img)
+            case False, True:
+                self.canvas.itemconfig(self.keys_left, image=self.key2_pressed_img)
+            case True, True:
+                self.canvas.itemconfig(self.keys_left, image=self.key12_pressed_img)
+            case False, False:
+                self.canvas.itemconfig(self.keys_left, image=self.left_paw_img)
+        
+        match(keys["key3_pressed"],keys["key4_pressed"]):
+            case True, False:
+                self.canvas.itemconfig(self.keys_right, image=self.key3_pressed_img)
+            case False, True:
+                self.canvas.itemconfig(self.keys_right, image=self.key4_pressed_img)
+            case True, True:
+                self.canvas.itemconfig(self.keys_right, image=self.key34_pressed_img)
+            case False, False:
+                self.canvas.itemconfig(self.keys_right, image=self.right_paw_img)
 
     def exit_app(self,event):
         self.listener.stop()
