@@ -1,6 +1,7 @@
-# Mania Cat.py
+# wip
+# Mania Cat.go
 This is not an orginal idea.\
-Mania Cat.py is a recreation of [malad1211/Mania-Cat](https://github.com/malad1211/Mania-Cat) in python.\
+Mania Cat.go is a recreation of [malad1211/Mania-Cat](https://github.com/malad1211/Mania-Cat) in Go.\
 Cat and keypress images are pulled from [malad1211](https://github.com/malad1211)'s repo
 
 
@@ -9,7 +10,7 @@ Cat and keypress images are pulled from [malad1211](https://github.com/malad1211
 
 2. Run config.exe to set the keybinds. (default keybinds are: d, f, j, k)
 
-3. Run ManiaCat_py.exe and enjoy!
+3. Run ManiaCat.exe and enjoy!
 
 ## Disclaimer
 Not every key can be read by the current version of config.exe.\
