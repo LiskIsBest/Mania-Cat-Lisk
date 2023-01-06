@@ -1,6 +1,6 @@
 # ManiaCat.py
 This is not an orginal idea.\
-Mania Cat.py is a recreation of [malad1211/Mania-Cat](https://github.com/malad1211/Mania-Cat) in python.\
+ManiaCat.py is a recreation of [malad1211/Mania-Cat](https://github.com/malad1211/Mania-Cat) in python.\
 Cat and keypress images are pulled from [malad1211](https://github.com/malad1211)'s repo
 
 
